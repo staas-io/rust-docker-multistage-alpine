@@ -28,7 +28,8 @@ RUN touch /usr/src/rust-main/src/main.rs
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 ##### Runtime 
-FROM alpine:3.16.0 AS runtime 
+FROM alpine:3.16.0 AS runtime
+LABEL contributors="Voro Oller <voro.oller@couragium.com>, Pascal Zwikirsch <https://www.linkedin.com/in/pascal-zwikirsch-3a95a1177/>"
 
 # Copy application binary from builder image
 COPY --from=builder /usr/src/rust-main/target/x86_64-unknown-linux-musl/release/rust-main /usr/local/bin
