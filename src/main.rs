@@ -1,22 +1,16 @@
-use warp::{Filter};
+#[async_std::main]
+async fn main() -> tide::Result<()> {
+    let address = std::env::var("LISTEN_ADDRESS").unwrap_or_else(|_| "0.0.0.0".to_string());
+    let port = std::env::var("LISTEN_PORT").expect("LISTEN_PORT env var is required");
+    let listen = format!("{}:{}", address, port);
 
+    let mut app = tide::new();
 
-#[tokio::main]
-async fn main() {
-    // GET /hello/warp => 200 OK with body "Hello, warp!"
-    let hello = warp::path!("hello" / String)
-        .map(|name| format!("Hello, {}!", name));
+    tide::log::start();
 
-    let routes =
-        warp::
-        get()
-            .and(hello);
+    app.at("/").get(move |_| async { Ok("Hello world!\n") });
 
-    let (host , port) = ([0,0,0,0], 3030);
+    app.listen(listen).await?;
 
-    println!("Starting server on: {}:{}", host.map(|a| a.to_string()).join("."), port);
-    warp::serve(routes)
-        .run((host, port))
-        .await;
-
+    Ok(())
 }
