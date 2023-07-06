@@ -1,16 +1,23 @@
-#[async_std::main]
-async fn main() -> tide::Result<()> {
-    let address = std::env::var("LISTEN_ADDRESS").unwrap_or_else(|_| "0.0.0.0".to_string());
-    let port = std::env::var("LISTEN_PORT").expect("LISTEN_PORT env var is required");
-    let listen = format!("{}:{}", address, port);
+use std::net::{Shutdown, TcpListener};
+use std::thread;
+use std::io::Write;
 
-    let mut app = tide::new();
+const RESPONSE: &'static [u8] = b"HTTP/1.1 200 OK\r
+Content-Type: text/html; charset=UTF-8\r\n\r
+<!DOCTYPE html><html><head><title>Rust Sample HTTP Server</title></head>
+<body>Hello world from STAAS.IO</body></html>\r";
 
-    tide::log::start();
+fn main() {
+    let listener = TcpListener::bind("0.0.0.0:3030").unwrap();
 
-    app.at("/").get(move |_| async { Ok("Hello world!\n") });
-
-    app.listen(listen).await?;
-
-    Ok(())
+    for stream in listener.incoming() {
+        thread::spawn(move || {
+            let mut stream = stream.unwrap();
+            match stream.write(RESPONSE) {
+                Ok(_) => println!("Response sent!"),
+                Err(e) => println!("Failed sending response: {}!", e),
+            }
+            stream.shutdown(Shutdown::Write).unwrap();
+        });
+    }
 }

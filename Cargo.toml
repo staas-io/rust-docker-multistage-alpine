@@ -3,5 +3,3 @@ name = "rust-main"
 version = "0.1.0"
 
 [dependencies]
-tide = "0.15"
-async-std = { version = "1.8", features = ["attributes"] }
