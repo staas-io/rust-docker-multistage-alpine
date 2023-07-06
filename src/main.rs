@@ -4,8 +4,7 @@ use std::io::Write;
 
 const RESPONSE: &'static [u8] = b"HTTP/1.1 200 OK\r
 Content-Type: text/html; charset=UTF-8\r\n\r
-<!DOCTYPE html><html><head><title>Rust Sample HTTP Server</title></head>
-<body>Hello world from STAAS.IO</body></html>\r";
+<!DOCTYPE html><html><head><title>Rust Sample HTTP Server</title></head><body>Hello world from STAAS.IO</body></html>\r";
 
 fn main() {
     let listener = TcpListener::bind("0.0.0.0:3030").unwrap();
